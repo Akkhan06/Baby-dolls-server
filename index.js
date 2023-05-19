@@ -27,8 +27,9 @@ async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
     await client.connect();
+
  const subCollection = client.db('subCategory').collection('subItems')
- const AllToysCollection = client.db('allToys').collection('AllToysItems')
+ const AllToysCollection = client.db('subCategory').collection('AllToysItems')
 
  app.get('/subcategory_all', async(req, res) => {
     const result = await subCollection.find().toArray()
@@ -46,6 +47,13 @@ async function run() {
     const result = await AllToysCollection.insertOne(query)
     res.send(result)
  })
+
+// GET TOYS FROM TOYS COLLECTION 
+app.get('/alltoys', async(req, res) => {
+    const query = req.body;
+    const result = await AllToysCollection.find(query).toArray()
+    res.send(result)
+})
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
