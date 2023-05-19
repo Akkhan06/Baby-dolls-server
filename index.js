@@ -35,7 +35,17 @@ async function run() {
     res.send(result)
  })
 
- 
+ app.get('/subcategory_single/:id', async(req, res) => {
+    const id = req.body;
+    console.log(id)
+ })
+
+//  Post data 
+ app.post('/alltoys', async(req, res) => {
+    const query = req.body;
+    const result = await AllToysCollection.insertOne(query)
+    res.send(result)
+ })
 
     // Send a ping to confirm a successful connection
     await client.db("admin").command({ ping: 1 });
