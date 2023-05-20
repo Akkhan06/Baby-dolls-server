@@ -28,22 +28,23 @@ async function run() {
     // Connect the client to the server	(optional starting in v4.7)
     // await client.connect();
 
- const subCollection = client.db('subCategory').collection('subItems')
+//  const subCollection = client.db('subCategory').collection('subItems')
  const AllToysCollection = client.db('subCategory').collection('AllToysItems')
 
- app.get('/subcategory_all', async(req, res) => {
-    const result = await subCollection.find().toArray()
-    res.send(result)
- })
+//  app.get('/subcategory_all', async(req, res) => {
+//     const result = await subCollection.find().toArray()
+//     res.send(result)
+//  })
 
- app.get('/subcategory_single/:id', async(req, res) => {
-    const id = req.body;
-    console.log(id)
- })
+//  app.get('/subcategory_single/:id', async(req, res) => {
+//     const id = req.body;
+//     console.log(id)
+//  })
 
 //  Post data 
  app.post('/alltoys', async(req, res) => {
     const query = req.body;
+    console.log(query)
     const result = await AllToysCollection.insertOne(query)
     res.send(result)
  })
@@ -51,7 +52,7 @@ async function run() {
 // GET TOYS FROM TOYS COLLECTION 
 app.get('/alltoys', async(req, res) => {
     const query = req.body;
-    const result = await AllToysCollection.find().toArray()
+    const result = await AllToysCollection.find({}).toArray()
     res.send(result)
 })
 
@@ -65,6 +66,11 @@ app.get('/alltoys/:text', async(req, res) => {
   
   const result = await AllToysCollection.find({}).toArray()
     res.send(result)
+})
+
+app.get('/alltoys/:email', async(req, res) => {
+  const result = await AllToysCollection.find({email: req.params.email})
+  res.send(result)
 })
 
     // Send a ping to confirm a successful connection
