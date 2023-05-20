@@ -26,7 +26,7 @@ const client = new MongoClient(uri, {
 async function run() {
   try {
     // Connect the client to the server	(optional starting in v4.7)
-    await client.connect();
+    // await client.connect();
 
  const subCollection = client.db('subCategory').collection('subItems')
  const AllToysCollection = client.db('subCategory').collection('AllToysItems')
@@ -51,7 +51,19 @@ async function run() {
 // GET TOYS FROM TOYS COLLECTION 
 app.get('/alltoys', async(req, res) => {
     const query = req.body;
-    const result = await AllToysCollection.find(query).toArray()
+    const result = await AllToysCollection.find().toArray()
+    res.send(result)
+})
+
+
+app.get('/alltoys/:text', async(req, res) => {
+  const doc = req.params.text;
+  if(doc =='csd' || doc == 'afd' || doc == 'abd'){
+    const result = await AllToysCollection.find({category: req.params.text}).toArray()
+   return res.send(result)
+  }
+  
+  const result = await AllToysCollection.find({}).toArray()
     res.send(result)
 })
 
