@@ -11,7 +11,7 @@ app.get('/', (req, res) => {
 })
 
 
-const { MongoClient, ServerApiVersion } = require('mongodb');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.5stkogd.mongodb.net/?retryWrites=true&w=majority"`
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -57,7 +57,7 @@ app.get('/alltoys', async(req, res) => {
 })
 
 
-app.get('/alltoys/:text', async(req, res) => {
+app.get('/alltoys_text/:text', async(req, res) => {
   const doc = req.params.text;
   if(doc =='csd' || doc == 'afd' || doc == 'abd'){
     const result = await AllToysCollection.find({category: req.params.text}).toArray()
@@ -68,8 +68,16 @@ app.get('/alltoys/:text', async(req, res) => {
     res.send(result)
 })
 
-app.get('/alltoys/:email', async(req, res) => {
-  const result = await AllToysCollection.find({email: req.params.email})
+app.get('/alltoys_email/:email', async(req, res) => {
+  console.log(req.params.email)
+  const result = await AllToysCollection.find({email: req.params.email}).toArray()
+  res.send(result)
+})
+
+app.get("/alltoys_one/:id", async(req, res) => {
+  const id = req.params.id;
+  const query = {_id: new ObjectId(id)}
+  const result = await AllToysCollection.findOne(query)
   res.send(result)
 })
 
