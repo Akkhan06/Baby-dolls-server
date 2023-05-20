@@ -63,7 +63,7 @@ app.get('/alltoys_text/:text', async(req, res) => {
 // GET DATA BY EMAIL FUNCTION
 app.get('/alltoys_email/:email', async(req, res) => {
   console.log(req.params.email)
-  const result = await AllToysCollection.find({email: req.params.email}).sort({price: 1}).toArray()
+  const result = await AllToysCollection.find({email: req.params.email}).sort({price: -1}).toArray()
   res.send(result)
 })
 
