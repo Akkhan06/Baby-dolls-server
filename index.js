@@ -3,7 +3,15 @@ const cors = require('cors');
 const app = express()
 const port = process.env.PORT || 5000;
 
-app.use(cors())
+const corsConfig = {
+  origin: '',
+  credentials: true,
+  methods: ['GET', 'POST', 'PUT', 'DELETE']
+}
+app.use(cors(corsConfig))
+app.options("", cors(corsConfig))
+
+
 app.use(express.json())
 require('dotenv').config()
 app.get('/', (req, res) => {
@@ -121,3 +129,5 @@ run().catch(console.dir);
 app.listen(port, () => {
     console.log('server in comming in port:', port)
 })
+
+module.exports = app;
