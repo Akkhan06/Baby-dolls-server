@@ -42,15 +42,28 @@ async function run() {
 // DATA COLLECTION FUNCTION
  const AllToysCollection = client.db('subCategory').collection('AllToysItems')
 
-//  const indexKey = {productName: 1}
-//  const indexOption = {productName: "productName"}
-//  await AllToysCollection.createIndex(indexKey, indexOption)
+ const indexKey = {productName: 1}
+ const indexOption = {productName: "productName"}
+ await AllToysCollection.createIndex(indexKey, indexOption)
 
 
- app.get("/search", async(req, res) => {
-  const searchQuery = req.query?.query
-  const result = await AllToysCollection.find({productName: {$regex: searchQuery, $options: "i"}}).toArray()
+ app.get("/search/:data", async(req, res) => {
+  const searchQuery = req.params.data
+  console.log(searchQuery)
+  const query = {productName: searchQuery}
+
+  const result = await AllToysCollection.find(query).toArray()
   res.send(result)
+
+ 
+
+  // await collection.createIndex({ name: 1 });
+
+  //   // Search for the product by name using the index
+  //   const query = { name: "productName" };
+  //   const result = await AllToysCollection.find(query).toArray();
+
+  //   res.status(200).json(result);
 
 })
 
@@ -58,13 +71,14 @@ async function run() {
  app.post('/alltoys', async(req, res) => {
     const query = req.body;
     console.log(query)
-    const result = await AllToysCollection.insertOne(query)
+    const result = await AllToysCollection.insertOne({...query, price: parseFloat(query.price)})
     res.send(result)
  })
 
 // GET TOYS FROM TOYS COLLECTION 
 app.get('/alltoys', async(req, res) => {
-    const result = await AllToysCollection.find({}).toArray()
+  const sortQuery = req.query.sort
+    const result = await AllToysCollection.find({}).sort({price : sortQuery === 'asc' ? 1 : -1}).limit(20).toArray()
     res.send(result)
 })
 
@@ -83,9 +97,13 @@ app.get('/alltoys_text/:text', async(req, res) => {
 
 // GET DATA BY EMAIL FUNCTION
 app.get('/alltoys_email/:email', async(req, res) => {
+  const emailParam = req.params.email;
   console.log(req.params.email)
-  const result = await AllToysCollection.find({email: req.params.email}).sort({price: -1}).toArray()
-  res.send(result)
+  const products = await AllToysCollection.find({ email: emailParam }).sort({ price: 1 }).toArray();
+  // Generate email content and send it to the recipient
+  res.status(200).json(products);
+
+
 })
 
 
