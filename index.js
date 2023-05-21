@@ -1,4 +1,5 @@
 const express = require('express');
+const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
 const cors = require('cors');
 const app = express()
 const port = process.env.PORT || 5000;
@@ -21,7 +22,7 @@ app.get('/', (req, res) => {
 })
 
 
-const { MongoClient, ServerApiVersion, ObjectId } = require('mongodb');
+
 const uri = `mongodb+srv://${process.env.DB_USER}:${process.env.DB_PASS}@cluster0.5stkogd.mongodb.net/?retryWrites=true&w=majority`
 
 // Create a MongoClient with a MongoClientOptions object to set the Stable API version
@@ -41,7 +42,17 @@ async function run() {
 // DATA COLLECTION FUNCTION
  const AllToysCollection = client.db('subCategory').collection('AllToysItems')
 
+//  const indexKey = {productName: 1}
+//  const indexOption = {productName: "productName"}
+//  await AllToysCollection.createIndex(indexKey, indexOption)
 
+
+ app.get("/search", async(req, res) => {
+  const searchQuery = req.query?.query
+  const result = await AllToysCollection.find({productName: {$regex: searchQuery, $options: "i"}}).toArray()
+  res.send(result)
+
+})
 
 //  POST DATA  
  app.post('/alltoys', async(req, res) => {
@@ -118,7 +129,7 @@ app.put('/alltoys_one/:id', async(req, res) => {
 
 
     // Send a ping to confirm a successful connection
-    await client.db("admin").command({ ping: 1 });
+    // await client.db("admin").command({ ping: 1 });
     console.log("Pinged your deployment. You successfully connected to MongoDB!");
   } finally {
     // Ensures that the client will close when you finish/error
